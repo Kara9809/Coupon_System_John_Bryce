@@ -25,7 +25,7 @@ public class CategoryDAOImpl implements CategoryDAO {
     public List<CATEGORY> getAllCategory() throws SQLException {
         final String GET_ALL_CATEGORY = "SELECT * FROM `project_coupons`.`categories`";
 
-//    TODO IMPLEMET LOGIC HERE
+//    TODO IMPLEMENT LOGIC HERE
         return null;
     }
 

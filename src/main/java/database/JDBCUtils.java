@@ -11,22 +11,22 @@ import java.util.Map;
 public class JDBCUtils {
 
     public static void runQuery(String sql) throws SQLException {
-          //Step 2 - getConnection from CP
-          Connection connection = ConnectionPool.getInstance().getConnection();
-          //Step 3 - Prepare Statement & Execute
-          PreparedStatement statement = connection.prepareStatement(sql);
-          statement.execute();
-          //Step 5 - restoreConnection to CP
-          ConnectionPool.getInstance().restoreConnection(connection);
+        //Step 2 - getConnection from CP
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        //Step 3 - Prepare Statement & Execute
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.execute();
+        //Step 5 - restoreConnection to CP
+        ConnectionPool.getInstance().restoreConnection(connection);
 
-      }
+    }
 
     public static void runQuery(String sql, Map<Integer, Object> map) throws SQLException {
         //Step 2 - getConnection from CP
         Connection connection = ConnectionPool.getInstance().getConnection();
         //Step 3 - Prepare Statement & Execute
         PreparedStatement statement = connection.prepareStatement(sql);
-        statement = supportParams(statement,map);
+        statement = supportParams(statement, map);
         statement.execute();
         //Step 5 - restoreConnection to CP
         ConnectionPool.getInstance().restoreConnection(connection);
@@ -51,14 +51,14 @@ public class JDBCUtils {
         return rows;
     }
 
-    public static List<?> runQueryWithResult(String sql, Map<Integer,Object> params) throws SQLException {
+    public static List<?> runQueryWithResult(String sql, Map<Integer, Object> params) throws SQLException {
 
         List<?> rows = null;
         //Step 2 - getConnection from CP
         Connection connection = ConnectionPool.getInstance().getConnection();
         //Step 3 - Prepare Statement & Execute
         PreparedStatement statement = connection.prepareStatement(sql);
-        statement = supportParams(statement,params);
+        statement = supportParams(statement, params);
 
         //Step 4 - Support ResultSet
         ResultSet resultSet = statement.executeQuery();
@@ -70,29 +70,29 @@ public class JDBCUtils {
         return rows;
     }
 
-    private static PreparedStatement supportParams(PreparedStatement statement, Map<Integer,Object> params) throws SQLException {
-        for(Map.Entry<Integer, Object> entry: params.entrySet()){
+    private static PreparedStatement supportParams(PreparedStatement statement, Map<Integer, Object> params) throws SQLException {
+        for (Map.Entry<Integer, Object> entry : params.entrySet()) {
             int key = entry.getKey();
             Object value = entry.getValue();
-            if(value instanceof Integer){
-                statement.setInt(key,(Integer) value);
+            if (value instanceof Integer) {
+                statement.setInt(key, (Integer) value);
                 continue;
             }
-            if(value instanceof String){
-                statement.setString(key,(String) value);
+            if (value instanceof String) {
+                statement.setString(key, (String) value);
                 continue;
             }
-            if(value instanceof  Double){
-                statement.setDouble(key,(Double) value);
+            if (value instanceof Double) {
+                statement.setDouble(key, (Double) value);
                 continue;
             }
-            if(value instanceof Boolean){
-                statement.setBoolean(key,(Boolean) value);
+            if (value instanceof Boolean) {
+                statement.setBoolean(key, (Boolean) value);
                 continue;
             }
 
-            if(value instanceof Date){
-                statement.setDate(key,(Date) value);
+            if (value instanceof Date) {
+                statement.setDate(key, (Date) value);
             }
         }
 
