@@ -7,9 +7,9 @@ import java.sql.SQLException;
 
 public abstract class ClientFacade {
 
-    protected CompaniesDAO companiesDAO = new CompaniesDAOImpl();
-    protected CustomersDAO customersDAO = new CustomersDAOImpl();
-    protected CouponsDAO couponsDAO = new CouponsDAOImpl();
+    protected CompaniesDAO companiesDAO = CompaniesDAOImpl.getInstance();
+    protected CustomersDAO customersDAO = CustomersDAOImpl.getInstance();
+    protected CouponsDAO couponsDAO = CouponsDAOImpl.getInstance();
 
     public ClientFacade() {
     }

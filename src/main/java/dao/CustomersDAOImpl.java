@@ -13,6 +13,18 @@ import entity.Customer;
 
 public class CustomersDAOImpl implements CustomersDAO {
 
+    // Step 1 for singleton class
+    private static final CustomersDAOImpl instance = new CustomersDAOImpl();
+
+    // Step 2 for singleton class
+    public static CustomersDAOImpl getInstance() {
+        return instance;
+    }
+
+    // Step 3 for singleton class
+    private CustomersDAOImpl() {
+    }
+
     @Override
     public void add(Customer customer) throws SQLException {
         String query = "INSERT INTO project_coupons.customers VALUES (0, ?, ?, ?, ?);";
