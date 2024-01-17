@@ -73,14 +73,14 @@ public class ConvertUtils {
     }
 
     public static boolean objectToBoolean(Map<String, Object> map) {
-        return ((long) map.get("res") == 1);
+        return ((int) map.get("result") == 1);
     }
 
     public static double objectToDouble(Map<String, Object> map) {
-        return ((double) map.get("res"));
+        return ((double) map.get("result"));
     }
 
     public static int objectToInt(Map<String, Object> map) {
-        return (int) (map.get("id"));
+        return (int) (map.get("result"));
     }
 }

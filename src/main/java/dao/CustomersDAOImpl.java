@@ -35,7 +35,6 @@ public class CustomersDAOImpl implements CustomersDAO {
         params.put(4, customer.getPassword());
 
         JDBCUtils.runQuery(query, params);
-//        throw new UnsupportedOperationException("Unimplemented method 'add'");
     }
 
     @Override
@@ -47,24 +46,21 @@ public class CustomersDAOImpl implements CustomersDAO {
         params.put(3, customer.getEmail());
         params.put(4, customer.getPassword());
         params.put(5, customer.getId());
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+
+        JDBCUtils.runQuery(query, params);
     }
 
     @Override
     public void delete(Integer id) throws SQLException {
-        String query = "DELETE FROM project_coupons.customers WHERE id = ? ;";
-
+        String query = "DELETE FROM project_coupons.customers WHERE id = ?;";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, id);
-
         JDBCUtils.runQuery(query, params);
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
     }
 
     @Override
     public List<Customer> getAll() throws SQLException {
         String query = "SELECT * FROM project_coupons.customers;";
-
         List<Customer> customers = new ArrayList<>();
         List<?> list = JDBCUtils.runQueryWithResult(query);
         for (Object obj : list) {

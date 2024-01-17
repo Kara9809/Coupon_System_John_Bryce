@@ -12,6 +12,7 @@ public abstract class ClientFacade {
     protected CouponsDAO couponsDAO = CouponsDAOImpl.getInstance();
 
     public ClientFacade() {
+
     }
 
     public abstract boolean login(String email, String password) throws CouponSystemException, SQLException;

@@ -13,7 +13,7 @@ public interface CompaniesDAO extends DaoMain<Company,Integer> {
 
     boolean isExistByEmailAndPassword(String email, String password) throws SQLException;
 
-    boolean isOtherExistByEmail(int idCompany, String email) throws SQLException;
+    boolean isOtherExistByEmail(int id, String email) throws SQLException;
 
     int getCompanyIdByEmail(String email) throws SQLException;
 

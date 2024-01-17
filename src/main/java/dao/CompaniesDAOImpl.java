@@ -10,18 +10,13 @@ import database.ConnectionPool;
 import database.ConvertUtils;
 import database.JDBCUtils;
 import entity.Company;
+import lombok.Getter;
 
 public class CompaniesDAOImpl implements CompaniesDAO {
 
-    //    STEP 1 FOR SINGELTON CLASS
-    private static final CompaniesDAOImpl instance = new CompaniesDAOImpl();
+    @Getter
+    private static final CompaniesDAO instance = new CompaniesDAOImpl();
 
-    //    STEP 2 FOR SINGELTON CLASS
-    public static CompaniesDAOImpl getInstance() {
-        return instance;
-    }
-
-    //    STEP 3 FOR SINGELTON CLASS
     private CompaniesDAOImpl() {
     }
 
@@ -45,7 +40,7 @@ public class CompaniesDAOImpl implements CompaniesDAO {
         params.put(2, company.getEmail());
         params.put(3, company.getPassword());
         params.put(4, id);
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        JDBCUtils.runQuery(query, params);
     }
 
     @Override
@@ -73,51 +68,136 @@ public class CompaniesDAOImpl implements CompaniesDAO {
 
     @Override
     public Company getSingle(Integer id) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSingle'");
+        String query = "SELECT * FROM project_coupons.companies WHERE id = ?;";
+        Company company = null;
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, id);
+
+        List<?> list = JDBCUtils.runQueryWithResult(query, params);
+
+        for (Object obj : list) {
+            company = ConvertUtils.objectToCompany((Map<String, Object>) obj);
+        }
+        return company;
+
     }
 
     @Override
     public boolean isExist(Integer id) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isExist'");
+        String query = "SELECT EXISTS (SELECT * FROM project_coupons.companies WHERE id = ?) AS result;";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, id);
+        boolean result = false;
+
+        List<?> list = JDBCUtils.runQueryWithResult(query, params);
+
+        for (Object obj : list) {
+            result = ConvertUtils.objectToBoolean((Map<String, Object>) obj);
+        }
+
+        return result;
     }
 
     @Override
     public boolean isExistByEmailOrName(String email, String name) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isExistByEmailOrName'");
+        String query = "SELECT EXISTS (SELECT * FROM project_coupons.companies WHERE email = ? OR name = ?) AS result;";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, email);
+        params.put(2, name);
+
+        boolean result = false;
+
+        List<?> list = JDBCUtils.runQueryWithResult(query, params);
+
+        for (Object obj : list) {
+            result = ConvertUtils.objectToBoolean((Map<String, Object>) obj);
+        }
+
+        return result;
     }
 
     @Override
     public boolean isExistByName(String name) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isExistByName'");
+        String query = "SELECT EXISTS (SELECT * FROM project_coupons.companies WHERE name = ?) AS result;";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, name);
+
+        boolean result = false;
+
+        List<?> list = JDBCUtils.runQueryWithResult(query, params);
+
+        for (Object obj : list) {
+            result = ConvertUtils.objectToBoolean((Map<String, Object>) obj);
+        }
+
+        return result;
     }
 
     @Override
     public boolean isExistByEmail(String email) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isExistByEmail'");
+        String query = "SELECT EXISTS (SELECT * FROM project_coupons.companies WHERE email = ?) AS result;";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, email);
+
+        boolean result = false;
+
+        List<?> list = JDBCUtils.runQueryWithResult(query, params);
+
+        for (Object obj : list) {
+            result = ConvertUtils.objectToBoolean((Map<String, Object>) obj);
+        }
+
+        return result;
     }
 
     @Override
     public boolean isExistByEmailAndPassword(String email, String password) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isExistByEmailAndPassword'");
+        String query = "SELECT EXISTS (SELECT * FROM project_coupons.companies WHERE email = ? AND password = ?) AS result;";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, email);
+        params.put(2, password);
+
+        boolean result = false;
+
+        List<?> list = JDBCUtils.runQueryWithResult(query, params);
+
+        for (Object obj : list) {
+            result = ConvertUtils.objectToBoolean((Map<String, Object>) obj);
+        }
+
+        return result;
     }
 
     @Override
-    public boolean isOtherExistByEmail(int idCompany, String email) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isOtherExistByEmail'");
+    public boolean isOtherExistByEmail(int id, String email) throws SQLException {
+        String query = "SELECT EXISTS (SELECT * FROM project_coupons.companies WHERE email = ? AND id != ?) AS result;";
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, email);
+        params.put(2, id);
+
+        boolean result = false;
+
+        List<?> list = JDBCUtils.runQueryWithResult(query, params);
+
+        for (Object obj : list) {
+            result = ConvertUtils.objectToBoolean((Map<String, Object>) obj);
+        }
+
+        return result;
     }
 
     @Override
     public int getCompanyIdByEmail(String email) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCompanyIdByEmail'");
+        String query = "SELECT id AS result FROM project_coupons.companies WHERE email = ?";
+        int id = 0;
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, email);
+
+        List<?> list = JDBCUtils.runQueryWithResult(query, params);
+
+        for (Object obj : list) {
+            id = ConvertUtils.objectToInt((Map<String, Object>) obj);
+        }
+        return id;
     }
-
-
 }
