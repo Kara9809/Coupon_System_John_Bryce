@@ -12,8 +12,7 @@ public class AdminFacadeImpl extends ClientFacade implements AdminFacade {
 
     @Override
     public boolean login(String email, String password) throws CouponSystemException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'login'");
+        return "admin@admin.com".equals(email) && "admin".equals(password);
     }
 
     @Override
@@ -27,10 +26,15 @@ public class AdminFacadeImpl extends ClientFacade implements AdminFacade {
         companiesDAO.add(company);
     }
 
-    @Override
+    @Override //to check
     public void updateCompany(int companyId, Company company) throws SQLException, CouponSystemException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateCompany'");
+        if (companiesDAO.isExist(company.getId())) {
+            throw new CouponSystemException(ErrorMessage.COMPANY_UPDATE_ID);
+        }
+        if (companiesDAO.isExistByName(company.getName())) {
+            throw new CouponSystemException(ErrorMessage.COMPANY_UPDATE_NAME);
+        }
+        companiesDAO.update(companyId, company);
     }
 
     @Override
