@@ -13,7 +13,6 @@ import entity.Company;
 import lombok.Getter;
 
 public class CompaniesDAOImpl implements CompaniesDAO {
-
     @Getter
     private static final CompaniesDAO instance = new CompaniesDAOImpl();
 
@@ -79,7 +78,6 @@ public class CompaniesDAOImpl implements CompaniesDAO {
             company = ConvertUtils.objectToCompany((Map<String, Object>) obj);
         }
         return company;
-
     }
 
     @Override
@@ -188,7 +186,7 @@ public class CompaniesDAOImpl implements CompaniesDAO {
 
     @Override
     public int getCompanyIdByEmail(String email) throws SQLException {
-        String query = "SELECT id AS result FROM project_coupons.companies WHERE email = ?";
+        String query = "SELECT id AS result FROM project_coupons.companies WHERE email = ?;";
         int id = 0;
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, email);
