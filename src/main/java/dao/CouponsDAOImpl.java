@@ -125,7 +125,7 @@ public class CouponsDAOImpl implements CouponsDAO {
 
     @Override
     public void deleteAllCouponPurchaseByCustomerId(int customerId) throws SQLException {
-        String query = "DELETE FROM project_coupons.purchases WHERE customers_id = ? AS result;";
+        String query = "DELETE FROM project_coupons.purchases WHERE customers_id = ? ;";
 
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerId);
@@ -211,12 +211,13 @@ public class CouponsDAOImpl implements CouponsDAO {
     //why we need companyId?? need to delete this field in CouponsDAO?
     @Override
     public List<Coupon> getAllByMaxPrice(int companyId, double price) throws SQLException {
-        String query = "SELECT * FROM project_coupons.coupons WHERE 'price' = (SELECT MAX(price));";
+        String query = "SELECT * FROM project_coupons.coupons WHERE company_id = ? AND 'price' = (SELECT MAX(price));";
 
         List<Coupon> coupons = new ArrayList<>();
 
         Map<Integer, Object> params = new HashMap<>();
-        params.put(1, price);
+        params.put(1, companyId);
+        params.put(2, price); //or we don't need this?
 
         List<?> list = JDBCUtils.runQueryWithResult(query, params);
 
@@ -224,19 +225,20 @@ public class CouponsDAOImpl implements CouponsDAO {
             Coupon coupon = ConvertUtils.objectToCoupon((Map<String, Object>) obj);
             coupons.add(coupon);
         }
-        return coupons;
 
+        return coupons;
     }
 
-    //why we need here companyID?
+    //to check
     @Override
     public List<Coupon> getCouponByCategory(int companyId, CATEGORY category) throws SQLException {
-        String query = "SELECT * FROM project_coupons.coupons WHERE category_id = ? ;";
+        String query = "SELECT * FROM project_coupons.coupons WHERE company_id = ? AND category_id = ? ;";
 
         List<Coupon> coupons = new ArrayList<>();
 
         Map<Integer, Object> params = new HashMap<>();
-        params.put(1, category);
+        params.put(1, companyId);
+        params.put(2, category);
 
         List<?> list = JDBCUtils.runQueryWithResult(query, params);
 
@@ -333,7 +335,7 @@ public class CouponsDAOImpl implements CouponsDAO {
     //TO CHECK, I'M NOT SURE AT ALL
     @Override
     public List<Coupon> getAllCouponsExpired(Date date) throws SQLException {
-        String query = "CREATE EVENT IF NOT EXISTS project_coupons.coupons ON SCHEDULE EVERY 1 DAY COMMENT 'All coupons are expired'"
+        String query = "CREATE EVENT IF NOT EXISTS project_coupons.coupons ON SCHEDULE EVERY 1 DAY COMMENT 'All coupons that expired today'"
                 + "DO BEGIN DELETE FROM project_coupons.coupons WHERE end_date < NOW() END;";
         //NOTE that MySQL Event Scheduler need to be enabled on your server:
         //SET GLOBAL event_scheduler = ON; ----??????

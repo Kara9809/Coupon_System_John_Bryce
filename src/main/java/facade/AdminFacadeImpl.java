@@ -1,17 +1,24 @@
 package facade;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import database.ConvertUtils;
+import database.JDBCUtils;
 import entity.Company;
 import entity.Customer;
 import exception.CouponSystemException;
 import exception.ErrorMessage;
 
+import static java.util.Arrays.stream;
+
 public class AdminFacadeImpl extends ClientFacade implements AdminFacade {
 
     @Override
-    public boolean login(String email, String password) throws CouponSystemException {
+    public boolean login(String email, String password) {
         return "admin@admin.com".equals(email) && "admin".equals(password);
     }
 
@@ -37,52 +44,53 @@ public class AdminFacadeImpl extends ClientFacade implements AdminFacade {
         companiesDAO.update(companyId, company);
     }
 
-    @Override
-    public void deleteCompany(int companyId) throws SQLException, CouponSystemException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteCompany'");
+    @Override // to check
+    public void deleteCompany(int companyId) throws SQLException {
+        companiesDAO.delete(companyId); //delete the company by id
+        couponsDAO.deleteAllCouponByCompaniesId(companyId); //delete all coupons
+        customersDAO.delete(companyId); //delete the history of purchases of this company by customers
     }
 
-    @Override
+    @Override // not sure, to check
     public List<Company> getAllCompanies() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllCompanies'");
+        return new ArrayList<>(companiesDAO.getAll());
     }
 
     @Override
     public Company getOneCompany(int companyId) throws SQLException, CouponSystemException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getOneCompany'");
+        return companiesDAO.getSingle(companyId);
     }
 
     @Override
     public void addCustomer(Customer customer) throws SQLException, CouponSystemException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addCustomer'");
+        if (customersDAO.isExistByEmail(customer.getEmail())) {
+            throw new CouponSystemException(ErrorMessage.CUSTOMER_EMAIL_EXIST);
+        }
+        customersDAO.add(customer);
     }
 
     @Override
     public void updateCustomer(int customerId, Customer customer) throws SQLException, CouponSystemException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateCustomer'");
+        if (customersDAO.isExist(customer.getId())) {
+            throw new CouponSystemException(ErrorMessage.COMPANY_UPDATE_ID);
+        }
+        customersDAO.update(customerId, customer);
     }
 
     @Override
-    public void deleteCustomer(int customerId) throws SQLException, CouponSystemException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteCustomer'");
+    public void deleteCustomer(int customerId) throws SQLException {
+        customersDAO.delete(customerId); //delete a customer by id
+        couponsDAO.deleteAllCouponPurchaseByCustomerId(customerId); //delete all coupons of this customer
     }
 
     @Override
     public List<Customer> getAllCustomers() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllCustomers'");
+        return new ArrayList<>(customersDAO.getAll());
     }
 
     @Override
-    public Customer getOneCustomers(int customerId) throws SQLException, CouponSystemException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getOneCustomers'");
+    public Customer getOneCustomers(int customerId) throws SQLException {
+        return customersDAO.getSingle(customerId);
     }
 
 }
