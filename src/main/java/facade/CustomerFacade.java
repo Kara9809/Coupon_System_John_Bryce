@@ -14,11 +14,11 @@ public interface CustomerFacade {
 
     void purchaseCoupon(Coupon coupon) throws CouponSystemException, SQLException;
 
-    List<Coupon> getCustomerCoupon() throws SQLException;
+    List<Coupon> getCustomerCoupon() throws SQLException, CouponSystemException;
 
-    List<Coupon> getCustomerCouponByCategory(CATEGORY category) throws SQLException;
+    List<Coupon> getCustomerCouponByCategory(CATEGORY category) throws SQLException, CouponSystemException;
 
-    List<Coupon> getCustomerCouponByMaxPrice(double maxPrice) throws SQLException;
+    List<Coupon> getCustomerCouponByMaxPrice(double maxPrice) throws SQLException, CouponSystemException;
 
-    Customer getCustomerDetails() throws SQLException;
+    Customer getCustomerDetails() throws SQLException, CouponSystemException;
 }

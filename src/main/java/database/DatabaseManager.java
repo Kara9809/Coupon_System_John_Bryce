@@ -71,12 +71,12 @@ public class DatabaseManager {
 
   private static final String CREATE_TABLE_PURCHASES = "CREATE TABLE `project_coupons`.`purchases` (\n"
       +
-      "  `customers_id` INT NOT NULL,\n" +
+      "  `customer_id` INT NOT NULL,\n" +
       "  `coupon_id` INT NOT NULL,\n" +
-      "  PRIMARY KEY (`customers_id`, `coupon_id`),\n" +
+      "  PRIMARY KEY (`customer_id`, `coupon_id`),\n" +
       "  INDEX `coupon_id_idx` (`coupon_id` ASC) VISIBLE,\n" +
       "  CONSTRAINT `customer_id`\n" +
-      "    FOREIGN KEY (`customers_id`)\n" +
+      "    FOREIGN KEY (`customer_id`)\n" +
       "    REFERENCES `project_coupons`.`customers` (`id`)\n" +
       "    ON DELETE NO ACTION\n" +
       "    ON UPDATE NO ACTION,\n" +

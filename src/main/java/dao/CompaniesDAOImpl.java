@@ -11,6 +11,7 @@ import database.ConvertUtils;
 import database.JDBCUtils;
 import entity.Company;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 public class CompaniesDAOImpl implements CompaniesDAO {
     @Getter

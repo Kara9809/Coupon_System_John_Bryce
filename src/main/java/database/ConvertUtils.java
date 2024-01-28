@@ -14,7 +14,7 @@ import entity.Company;
 import entity.Coupon;
 import entity.Customer;
 
-public class ConvertUtils {
+public final class ConvertUtils {
     public static List<?> toList(ResultSet resultSet) throws SQLException {
         List<Map<String, Object>> list = new ArrayList<>();
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();

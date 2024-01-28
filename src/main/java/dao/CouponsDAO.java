@@ -14,7 +14,7 @@ public interface CouponsDAO extends DaoMain<Coupon, Integer> {
 
   void deleteAllCouponPurchaseByCouponId(int couponId) throws SQLException;
 
-  void deleteAllCouponByCompaniesId(int companyId) throws SQLException;
+  void deleteAllCouponByCompanyId(int companyId) throws SQLException;
 
   boolean isExistByTitleAndCompanyId(String title, int companyId) throws SQLException;
 
@@ -34,7 +34,7 @@ public interface CouponsDAO extends DaoMain<Coupon, Integer> {
 
   boolean isExistByCouponIdAndCompanyId(int couponId, int companyId) throws SQLException;
 
-  List<Coupon> getAllCouponsExpired(Date date) throws SQLException;
+  List<Coupon> getAllCouponsExpired() throws SQLException;
 
   void deleteALLExpiredCoupon() throws SQLException;
 

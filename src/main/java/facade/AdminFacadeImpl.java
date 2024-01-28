@@ -3,12 +3,9 @@ package facade;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import database.ConvertUtils;
-import database.JDBCUtils;
 import entity.Company;
+import entity.Coupon;
 import entity.Customer;
 import exception.CouponSystemException;
 import exception.ErrorMessage;
@@ -33,31 +30,42 @@ public class AdminFacadeImpl extends ClientFacade implements AdminFacade {
         companiesDAO.add(company);
     }
 
-    @Override //to check
+    @Override
     public void updateCompany(int companyId, Company company) throws SQLException, CouponSystemException {
-        if (companiesDAO.isExist(company.getId())) {
+        if (!companiesDAO.isExist(companyId)) {
             throw new CouponSystemException(ErrorMessage.COMPANY_UPDATE_ID);
         }
-        if (companiesDAO.isExistByName(company.getName())) {
+        if (!companiesDAO.isExistByName(company.getName())) {
             throw new CouponSystemException(ErrorMessage.COMPANY_UPDATE_NAME);
         }
         companiesDAO.update(companyId, company);
     }
 
-    @Override // to check
-    public void deleteCompany(int companyId) throws SQLException {
+    @Override
+    public void deleteCompany(int companyId) throws SQLException, CouponSystemException {
+        if (!companiesDAO.isExist(companyId)) {
+            throw new CouponSystemException(ErrorMessage.NOT_EXIST_COMPANY);
+        }
+
+//        Delete company coupons from purchase table
+        for (Coupon coupon : couponsDAO.getAllByCompanyId(companyId)) {
+            couponsDAO.deleteAllCouponPurchaseByCouponId(coupon.getId());
+        }
+
+        couponsDAO.deleteAllCouponByCompanyId(companyId); //delete all coupons
         companiesDAO.delete(companyId); //delete the company by id
-        couponsDAO.deleteAllCouponByCompaniesId(companyId); //delete all coupons
-        customersDAO.delete(companyId); //delete the history of purchases of this company by customers
     }
 
-    @Override // not sure, to check
+    @Override
     public List<Company> getAllCompanies() throws SQLException {
-        return new ArrayList<>(companiesDAO.getAll());
+        return companiesDAO.getAll();
     }
 
     @Override
     public Company getOneCompany(int companyId) throws SQLException, CouponSystemException {
+        if (!companiesDAO.isExist(companyId)) {
+            throw new CouponSystemException(ErrorMessage.NOT_EXIST_COMPANY);
+        }
         return companiesDAO.getSingle(companyId);
     }
 
@@ -71,25 +79,31 @@ public class AdminFacadeImpl extends ClientFacade implements AdminFacade {
 
     @Override
     public void updateCustomer(int customerId, Customer customer) throws SQLException, CouponSystemException {
-        if (customersDAO.isExist(customer.getId())) {
-            throw new CouponSystemException(ErrorMessage.COMPANY_UPDATE_ID);
+        if (!customersDAO.isExist(customer.getId())) {
+            throw new CouponSystemException(ErrorMessage.CUSTOMER_UPDATE_ID);
         }
         customersDAO.update(customerId, customer);
     }
 
     @Override
-    public void deleteCustomer(int customerId) throws SQLException {
-        customersDAO.delete(customerId); //delete a customer by id
+    public void deleteCustomer(int customerId) throws SQLException, CouponSystemException {
+        if (!customersDAO.isExist(customerId)) {
+            throw new CouponSystemException(ErrorMessage.NOT_EXIST_CUSTOMER);
+        }
         couponsDAO.deleteAllCouponPurchaseByCustomerId(customerId); //delete all coupons of this customer
+        customersDAO.delete(customerId); //delete a customer by id
     }
 
     @Override
     public List<Customer> getAllCustomers() throws SQLException {
-        return new ArrayList<>(customersDAO.getAll());
+        return customersDAO.getAll();
     }
 
     @Override
-    public Customer getOneCustomers(int customerId) throws SQLException {
+    public Customer getOneCustomers(int customerId) throws SQLException, CouponSystemException {
+        if (!customersDAO.isExist(customerId)) {
+            throw new CouponSystemException(ErrorMessage.NOT_EXIST_CUSTOMER);
+        }
         return customersDAO.getSingle(customerId);
     }
 

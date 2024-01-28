@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-public class JDBCUtils {
+public final class JDBCUtils {
 
     public static void runQuery(String sql) throws SQLException {
         //Step 2 - getConnection from CP
