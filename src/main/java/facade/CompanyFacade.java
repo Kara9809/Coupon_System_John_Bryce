@@ -12,19 +12,19 @@ public interface CompanyFacade {
 
     boolean login(String email, String password) throws CouponSystemException, SQLException;
 
-    void addCoupon(Coupon coupon) throws SQLException, CouponSystemException;
+    void addCoupon(int companyId, Coupon coupon) throws SQLException, CouponSystemException;
 
-    void updateCoupon(int couponId, Coupon coupon) throws SQLException, CouponSystemException;
+    void updateCoupon(int companyId, int couponId, Coupon coupon) throws SQLException, CouponSystemException;
 
-    void deleteCoupon(int couponId, int customerId) throws SQLException, CouponSystemException;
+    void deleteCoupon(int companyId, int couponId) throws SQLException, CouponSystemException;
 
-    List<Coupon> getCompanyCoupons() throws SQLException, CouponSystemException;
+    List<Coupon> getCompanyCoupons(int companyId) throws SQLException, CouponSystemException;
 
-    List<Coupon> getCompanyCouponsByCategory(CATEGORY category) throws SQLException, CouponSystemException;
+    List<Coupon> getCompanyCouponsByCategory(int companyId, CATEGORY category) throws SQLException, CouponSystemException;
 
-    List<Coupon> getCompanyCouponsByMaxPrice(double maxPrice) throws SQLException, CouponSystemException;
+    List<Coupon> getCompanyCouponsByMaxPrice(int companyId, double maxPrice) throws SQLException, CouponSystemException;
 
-    Company getCompanyDetails() throws SQLException, CouponSystemException;
+    Company getCompanyDetails(int companyId) throws SQLException, CouponSystemException;
 
 
 

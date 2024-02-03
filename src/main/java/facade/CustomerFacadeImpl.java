@@ -1,66 +1,94 @@
 package facade;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
+import dao.CompaniesDAO;
+import dao.CompaniesDAOImpl;
 import entity.CATEGORY;
 import entity.Coupon;
 import entity.Customer;
 import exception.CouponSystemException;
 import exception.ErrorMessage;
+import lombok.Getter;
 
 public class CustomerFacadeImpl extends ClientFacade implements CustomerFacade {
+
+    @Getter
+    private static final CustomerFacade instance = new CustomerFacadeImpl();
+
+    private CustomerFacadeImpl() {
+    }
 
     @Override
     public boolean login(String email, String password) throws SQLException, CouponSystemException {
         if (!customersDAO.isExistByEmailAndPassword(email, password)) {
-            throw new CouponSystemException(ErrorMessage.NOT_EXIST_CUSTOMER);
+            throw new CouponSystemException(ErrorMessage.CUSTOMER_LOGIN_ERROR);
         }
         return true;
     }
 
-    @Override //to check
-    public void purchaseCoupon(Coupon coupon) throws CouponSystemException, SQLException {
-        //לא ניתן לרכוש קופון יותר מפעם אחת
-        if (couponsDAO.isExistByCustomerIdAndCouponId(getCustomerDetails().getId(), coupon.getId())) {
-            throw new CouponSystemException(ErrorMessage.COUPON_PURCHASED);
-        }
-        // לא ניתן לרכוש קופון אם הכמות שלו היא 0
-        if (!couponsDAO.isExist(coupon.getId())) {
+    @Override
+    public void purchaseCoupon(int customerId, int couponId) throws CouponSystemException, SQLException {
+        Coupon couponFromDatabase = couponsDAO.getSingle(couponId);
+
+        if (couponFromDatabase == null) {
             throw new CouponSystemException(ErrorMessage.NOT_EXIST_COUPON);
         }
-        // לא ניתן לרכוש את הקופון אם תאריך התפוגה שלו כבר הגיע.
-        if (getCustomerCoupon().stream()
-                .anyMatch(couponsDAO.getAllCouponsExpired()::contains)) {
-            throw new CouponSystemException(ErrorMessage.COUPON_EXPIRED);
-        }
-        //רכישת הקופון
-        couponsDAO.addCouponPurchase(getCustomerDetails().getId(), coupon.getId());
-        //לאחר הרכישה יש להוריד את הכמות במלאי של הקופון ב-1
-        couponsDAO.deleteAllCouponPurchaseByCustomerId(getCustomerDetails().getId());
-    }
 
-    @Override
-    public List<Coupon> getCustomerCoupon() throws SQLException, CouponSystemException {
-        return couponsDAO.getAllCouponByCustomerId(getCustomerDetails().getId());
-    }
-
-    @Override
-    public List<Coupon> getCustomerCouponByCategory(CATEGORY category) throws SQLException, CouponSystemException {
-        return couponsDAO.getAllCouponByCustomerIdAndCategory(getCustomerDetails().getId(), category);
-    }
-
-    @Override
-    public List<Coupon> getCustomerCouponByMaxPrice(double maxPrice) throws SQLException, CouponSystemException {
-        return couponsDAO.getAllCouponByCustomerIdAndMaxPrice(getCustomerDetails().getId(), maxPrice);
-    }
-
-    @Override
-    public Customer getCustomerDetails() throws SQLException, CouponSystemException {
-        if (!customersDAO.isExist(getCustomerDetails().getId())) {
+        if (!customersDAO.isExist(customerId)) {
             throw new CouponSystemException(ErrorMessage.NOT_EXIST_CUSTOMER);
         }
-        return customersDAO.getSingle(getCustomerDetails().getId());
+
+        if (couponsDAO.isExistByCustomerIdAndCouponId(customerId, couponId)) {
+            throw new CouponSystemException(ErrorMessage.COUPON_PURCHASED);
+        }
+
+        if (couponFromDatabase.getEndDate().before(Date.valueOf(LocalDate.now()))) {
+            throw new CouponSystemException(ErrorMessage.COUPON_EXPIRED);
+        }
+
+        if (couponFromDatabase.getAmount() <= 0) {
+            throw new CouponSystemException(ErrorMessage.COUPON_OUT_OF_STOCK);
+        }
+        couponFromDatabase.setAmount(couponFromDatabase.getAmount() - 1);
+        couponsDAO.update(couponId, couponFromDatabase);
+        couponsDAO.addCouponPurchase(customerId, couponId);
+    }
+
+    @Override
+    public List<Coupon> getCustomerCoupon(int customerId) throws SQLException, CouponSystemException {
+        if (!customersDAO.isExist(customerId)) {
+            throw new CouponSystemException(ErrorMessage.NOT_EXIST_CUSTOMER);
+        }
+
+        return couponsDAO.getAllCouponByCustomerId(customerId);
+    }
+
+    @Override
+    public List<Coupon> getCustomerCouponByCategory(int customerId, CATEGORY category) throws SQLException, CouponSystemException {
+        if (!customersDAO.isExist(customerId)) {
+            throw new CouponSystemException(ErrorMessage.NOT_EXIST_CUSTOMER);
+        }
+        return couponsDAO.getAllCouponByCustomerIdAndCategory(customerId, category);
+    }
+
+    @Override
+    public List<Coupon> getCustomerCouponByMaxPrice(int customerId, double maxPrice) throws SQLException, CouponSystemException {
+        if (!customersDAO.isExist(customerId)) {
+            throw new CouponSystemException(ErrorMessage.NOT_EXIST_CUSTOMER);
+        }
+        return couponsDAO.getAllCouponByCustomerIdAndMaxPrice(customerId, maxPrice);
+    }
+
+    @Override
+    public Customer getCustomerDetails(int customerId) throws SQLException, CouponSystemException {
+        if (!customersDAO.isExist(customerId)) {
+            throw new CouponSystemException(ErrorMessage.NOT_EXIST_CUSTOMER);
+        }
+        return customersDAO.getSingle(customerId);
     }
 
 }

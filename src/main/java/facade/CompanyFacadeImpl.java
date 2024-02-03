@@ -11,74 +11,86 @@ import entity.Coupon;
 import entity.Customer;
 import exception.CouponSystemException;
 import exception.ErrorMessage;
+import lombok.Getter;
 
 public class CompanyFacadeImpl extends ClientFacade implements CompanyFacade {
+
+    @Getter
+    private static final CompanyFacade instance = new CompanyFacadeImpl();
+
+    private CompanyFacadeImpl() {
+    }
 
     @Override
     public boolean login(String email, String password) throws CouponSystemException, SQLException {
         if (!companiesDAO.isExistByEmailAndPassword(email, password)) {
-            throw new CouponSystemException(ErrorMessage.NOT_EXIST_COMPANY);
+            throw new CouponSystemException(ErrorMessage.COMPANY_LOGIN_ERROR);
         }
         return true;
     }
 
     @Override
-    public void addCoupon(Coupon coupon) throws SQLException, CouponSystemException {
-        if (couponsDAO.isExistByTitleAndCompanyId(coupon.getTitle(), coupon.getCompanyId())) {
+    public void addCoupon(int companyId, Coupon coupon) throws SQLException, CouponSystemException {
+        if (!companiesDAO.isExist(companyId)) {
+            throw new CouponSystemException(ErrorMessage.NOT_EXIST_COMPANY);
+        }
+        if (couponsDAO.isExistByTitleAndCompanyId(coupon.getTitle(), companyId)) {
             throw new CouponSystemException(ErrorMessage.COUPON_TITLE_EXIST);
         }
+        coupon.setCompanyId(companyId);
         couponsDAO.add(coupon);
     }
 
     @Override
-    public void updateCoupon(int couponId, Coupon coupon) throws SQLException, CouponSystemException {
+    public void updateCoupon(int companyId, int couponId, Coupon coupon) throws SQLException, CouponSystemException {
         if (!couponsDAO.isExist(couponId)) {
             throw new CouponSystemException(ErrorMessage.COUPON_UPDATE_ID);
         }
-        if (!couponsDAO.isExist(coupon.getCompanyId())) {
+        if (!couponsDAO.isExistByCouponIdAndCompanyId(couponId, companyId)) {
             throw new CouponSystemException(ErrorMessage.COUPON_UPDATE_COMP_ID);
         }
+        coupon.setCompanyId(companyId);
         couponsDAO.update(couponId, coupon);
     }
 
-    @Override //I added customer id to this signature of method
-    public void deleteCoupon(int couponId, int customerId) throws SQLException, CouponSystemException {
-        if (!couponsDAO.isExist(couponId)) {
-            throw new CouponSystemException(ErrorMessage.NOT_EXIST_COUPON);
+    @Override
+    public void deleteCoupon(int companyId, int couponId) throws SQLException, CouponSystemException {
+        if (!couponsDAO.isExistByCouponIdAndCompanyId(couponId, companyId)) {
+            throw new CouponSystemException(ErrorMessage.COUPON_OR_COMPANY_NOT_EXIST);
         }
-
-        //Delete coupon_id from purchase table - version 1
-//    for (Coupon coupon : couponsDAO.getAllCouponByCustomerId(customerId)) {
-//      couponsDAO.deleteAllCouponPurchaseByCustomerId(coupon.getId());
-//    }
-
-        couponsDAO.deleteAllCouponPurchaseByCustomerId(customerId); //v2 delete all coupons purchases by customer id
-        couponsDAO.delete(couponId); //delete the coupon by id
+        couponsDAO.deleteAllCouponPurchaseByCouponId(couponId);
+        couponsDAO.delete(couponId);
     }
 
     @Override
-    public List<Coupon> getCompanyCoupons() throws SQLException, CouponSystemException {
-        return couponsDAO.getAllByCompanyId(getCompanyDetails().getId());
-    }
-
-    @Override
-    public List<Coupon> getCompanyCouponsByCategory(CATEGORY category) throws SQLException, CouponSystemException {
-        if (!companiesDAO.isExist(getCompanyDetails().getId())) {
+    public List<Coupon> getCompanyCoupons(int companyId) throws SQLException, CouponSystemException {
+        if (!companiesDAO.isExist(companyId)) {
             throw new CouponSystemException(ErrorMessage.NOT_EXIST_COMPANY);
         }
-        return couponsDAO.getCouponByCategory(getCompanyDetails().getId(), category); //can't do category.getCategoryId())
+        return couponsDAO.getAllByCompanyId(companyId);
     }
 
     @Override
-    public List<Coupon> getCompanyCouponsByMaxPrice(double maxPrice) throws SQLException, CouponSystemException {
-        return couponsDAO.getAllByMaxPrice(getCompanyDetails().getId(), maxPrice);
-    }
-
-    @Override
-    public Company getCompanyDetails() throws SQLException, CouponSystemException {
-        if (!companiesDAO.isExist(getCompanyDetails().getId())) {
+    public List<Coupon> getCompanyCouponsByCategory(int companyId, CATEGORY category) throws SQLException, CouponSystemException {
+        if (!companiesDAO.isExist(companyId)) {
             throw new CouponSystemException(ErrorMessage.NOT_EXIST_COMPANY);
         }
-        return companiesDAO.getSingle(getCompanyDetails().getId());
+        return couponsDAO.getCouponByCategory(companyId, category);
+    }
+
+    @Override
+    public List<Coupon> getCompanyCouponsByMaxPrice(int companyId, double maxPrice) throws SQLException, CouponSystemException {
+        if (!companiesDAO.isExist(companyId)) {
+            throw new CouponSystemException(ErrorMessage.NOT_EXIST_COMPANY);
+        }
+        return couponsDAO.getAllByMaxPrice(companyId, maxPrice);
+    }
+
+    @Override
+    public Company getCompanyDetails(int companyId) throws SQLException, CouponSystemException {
+        if (!companiesDAO.isExist(companyId)) {
+            throw new CouponSystemException(ErrorMessage.NOT_EXIST_COMPANY);
+        }
+        return companiesDAO.getSingle(companyId);
     }
 }

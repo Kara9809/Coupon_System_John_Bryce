@@ -12,13 +12,13 @@ public interface CustomerFacade {
 
     boolean login(String email, String password) throws SQLException, CouponSystemException;
 
-    void purchaseCoupon(Coupon coupon) throws CouponSystemException, SQLException;
+    void purchaseCoupon(int customerId, int couponId) throws CouponSystemException, SQLException;
 
-    List<Coupon> getCustomerCoupon() throws SQLException, CouponSystemException;
+    List<Coupon> getCustomerCoupon(int customerId) throws SQLException, CouponSystemException;
 
-    List<Coupon> getCustomerCouponByCategory(CATEGORY category) throws SQLException, CouponSystemException;
+    List<Coupon> getCustomerCouponByCategory(int customerId, CATEGORY category) throws SQLException, CouponSystemException;
 
-    List<Coupon> getCustomerCouponByMaxPrice(double maxPrice) throws SQLException, CouponSystemException;
+    List<Coupon> getCustomerCouponByMaxPrice(int customerId, double maxPrice) throws SQLException, CouponSystemException;
 
-    Customer getCustomerDetails() throws SQLException, CouponSystemException;
+    Customer getCustomerDetails(int customerId) throws SQLException, CouponSystemException;
 }

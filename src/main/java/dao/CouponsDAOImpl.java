@@ -347,8 +347,11 @@ public class CouponsDAOImpl implements CouponsDAO {
 
     @Override
     public void deleteALLExpiredCoupon() throws SQLException {
-        String query = "DELETE FROM project_coupons.coupons WHERE end_date < CURDATE();";
-        JDBCUtils.runQuery(query);
+        String deleteExpiredPurchasedCoupons = "DELETE FROM project_coupons.purchases WHERE coupon_id IN (SELECT id FROM project_coupons.coupons WHERE end_date< CURDATE();)";
+        String deleteExpiredCoupons = "DELETE FROM project_coupons.coupons WHERE end_date < CURDATE();";
+
+        JDBCUtils.runQuery(deleteExpiredPurchasedCoupons);
+        JDBCUtils.runQuery(deleteExpiredCoupons);
     }
 
 }

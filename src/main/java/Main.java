@@ -6,6 +6,7 @@ import database.DatabaseManager;
 import entity.Company;
 import entity.Coupon;
 import entity.Customer;
+import thread.RemoveExpiredCouponThread;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -18,8 +19,11 @@ public class Main {
 
 
     public static void main(String[] args) {
+
         try {
             DatabaseManager.dropAndCreateStrategy();
+            new RemoveExpiredCouponThread();
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

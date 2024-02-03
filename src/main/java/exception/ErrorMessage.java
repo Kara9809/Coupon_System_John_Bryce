@@ -6,13 +6,16 @@ public enum ErrorMessage {
 
   COMPANY_EMAIL_EXIST("cannot add company with existing email"),
 
-  ADMIN_LOGIN_ERROR("login error"),
+  ADMIN_LOGIN_ERROR("login error email or password are wrong"),
+
+  COMPANY_LOGIN_ERROR("login error email or password are wrong"),
+
+
+  CUSTOMER_LOGIN_ERROR("login error email or password are wrong"),
+
+  COUPON_OR_COMPANY_NOT_EXIST("coupon or company not exist"),
 
   CUSTOMER_EMAIL_EXIST("cannot add customer with existing email"),
-
-  COMPANY_EMAIL_OR_PASSWORD("Login error, email or password not exist"),
-
-  CUSTOMER_EMAIL_OR_PASSWORD("Login error, email or password not exist"),
 
   COUPON_TITLE_EXIST("cannot add coupon with existing title"),
 

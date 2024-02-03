@@ -9,14 +9,24 @@ import entity.Coupon;
 import entity.Customer;
 import exception.CouponSystemException;
 import exception.ErrorMessage;
+import lombok.Getter;
 
 import static java.util.Arrays.stream;
 
 public class AdminFacadeImpl extends ClientFacade implements AdminFacade {
 
+    @Getter
+    private static final AdminFacade instance = new AdminFacadeImpl();
+
+    private AdminFacadeImpl() {
+    }
+
     @Override
-    public boolean login(String email, String password) {
-        return "admin@admin.com".equals(email) && "admin".equals(password);
+    public boolean login(String email, String password) throws CouponSystemException {
+        if (!"admin@admin.com".equalsIgnoreCase(email) && "admin".equals(password)) {
+            throw new CouponSystemException(ErrorMessage.ADMIN_LOGIN_ERROR);
+        }
+        return true;
     }
 
     @Override
