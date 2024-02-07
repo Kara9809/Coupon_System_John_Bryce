@@ -3,12 +3,9 @@ package facade;
 import java.sql.SQLException;
 import java.util.List;
 
-import dao.CouponsDAO;
-import dao.CouponsDAOImpl;
-import entity.CATEGORY;
+import entity.Category;
 import entity.Company;
 import entity.Coupon;
-import entity.Customer;
 import exception.CouponSystemException;
 import exception.ErrorMessage;
 import lombok.Getter;
@@ -71,7 +68,7 @@ public class CompanyFacadeImpl extends ClientFacade implements CompanyFacade {
     }
 
     @Override
-    public List<Coupon> getCompanyCouponsByCategory(int companyId, CATEGORY category) throws SQLException, CouponSystemException {
+    public List<Coupon> getCompanyCouponsByCategory(int companyId, Category category) throws SQLException, CouponSystemException {
         if (!companiesDAO.isExist(companyId)) {
             throw new CouponSystemException(ErrorMessage.NOT_EXIST_COMPANY);
         }

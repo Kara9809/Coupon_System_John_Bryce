@@ -5,7 +5,7 @@ import java.sql.Date;
 public class Coupon {
     private int id;
     private int companyId;
-    private CATEGORY categoryId;
+    private Category category;
     private String title;
     private String description;
     private Date startDate;
@@ -14,16 +14,16 @@ public class Coupon {
     private double price;
     private String image;
 
-    public Coupon(int id, int companyId, CATEGORY categoryId, String title, String description, Date startDate,
+    public Coupon(int id, int companyId, Category categoryId, String title, String description, Date startDate,
                   Date endDate, int amount, double price, String image) {
         this(companyId, categoryId, title, description, startDate, endDate, amount, price, image);
         this.id = id;
     }
 
-    public Coupon(int companyId, CATEGORY categoryId, String title, String description, Date startDate, Date endDate,
+    public Coupon(int companyId, Category categoryId, String title, String description, Date startDate, Date endDate,
                   int amount, double price, String image) {
         this.companyId = companyId;
-        this.categoryId = categoryId;
+        this.category = categoryId;
         this.title = title;
         this.description = description;
         this.startDate = startDate;
@@ -49,12 +49,12 @@ public class Coupon {
         this.companyId = companyId;
     }
 
-    public CATEGORY getCategoryId() {
-        return categoryId;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategory(CATEGORY categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(Category categoryId) {
+        this.category = categoryId;
     }
 
     public String getTitle() {
@@ -118,7 +118,7 @@ public class Coupon {
         return "Coupon{" +
                 "id=" + id +
                 ", companyId=" + companyId +
-                ", category=" + categoryId +
+                ", category=" + category +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", startDate=" + startDate +

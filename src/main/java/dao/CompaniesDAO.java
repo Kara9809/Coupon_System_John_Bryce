@@ -17,4 +17,5 @@ public interface CompaniesDAO extends DaoMain<Company,Integer> {
 
     int getCompanyIdByEmail(String email) throws SQLException;
 
+
 }

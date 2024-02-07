@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import entity.CATEGORY;
+import entity.Category;
 import entity.Company;
 import entity.Coupon;
 import entity.Customer;
@@ -54,7 +54,7 @@ public final class ConvertUtils {
     public static Coupon objectToCoupon(Map<String, Object> map) {
         int id = (int) map.get("id");
         int companyId = (int) map.get("company_id");
-        CATEGORY category = CATEGORY.values()[(int) map.get("category_id") - 1];
+        Category category = Category.values()[(int) map.get("category_id") - 1];
         String title = (String) map.get("title");
         String description = (String) map.get("description");
         Date startDate = (Date) map.get("start_date");
@@ -67,13 +67,13 @@ public final class ConvertUtils {
 
     }
 
-    public static CATEGORY objectToCategory(Map<String, Object> map) {
+    public static Category objectToCategory(Map<String, Object> map) {
         String name = (String) map.get("name");
-        return CATEGORY.valueOf(name);
+        return Category.valueOf(name);
     }
 
     public static boolean objectToBoolean(Map<String, Object> map) {
-        return ((int) map.get("result") == 1);
+        return ((long) map.get("result") == 1);
     }
 
     public static double objectToDouble(Map<String, Object> map) {

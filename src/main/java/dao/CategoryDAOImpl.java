@@ -8,8 +8,7 @@ import java.util.Map;
 
 import database.ConvertUtils;
 import database.JDBCUtils;
-import entity.CATEGORY;
-import entity.Company;
+import entity.Category;
 
 public class CategoryDAOImpl implements CategoryDAO {
 
@@ -25,13 +24,13 @@ public class CategoryDAOImpl implements CategoryDAO {
     }
 
     @Override
-    public List<CATEGORY> getAllCategory() throws SQLException {
+    public List<Category> getAllCategory() throws SQLException {
         final String query = "SELECT * FROM project_coupons.categories;";
 
-        List<CATEGORY> categories = new ArrayList<>();
+        List<Category> categories = new ArrayList<>();
         List<?> list = JDBCUtils.runQueryWithResult(query);
         for (Object obj : list) {
-            CATEGORY category = ConvertUtils.objectToCategory((Map<String, Object>) obj);
+            Category category = ConvertUtils.objectToCategory((Map<String, Object>) obj);
             categories.add(category);
         }
         return categories;

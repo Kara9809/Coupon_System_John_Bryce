@@ -3,7 +3,7 @@ package facade;
 import java.sql.SQLException;
 import java.util.List;
 
-import entity.CATEGORY;
+import entity.Category;
 import entity.Coupon;
 import entity.Customer;
 import exception.CouponSystemException;
@@ -16,7 +16,7 @@ public interface CustomerFacade {
 
     List<Coupon> getCustomerCoupon(int customerId) throws SQLException, CouponSystemException;
 
-    List<Coupon> getCustomerCouponByCategory(int customerId, CATEGORY category) throws SQLException, CouponSystemException;
+    List<Coupon> getCustomerCouponByCategory(int customerId, Category category) throws SQLException, CouponSystemException;
 
     List<Coupon> getCustomerCouponByMaxPrice(int customerId, double maxPrice) throws SQLException, CouponSystemException;
 

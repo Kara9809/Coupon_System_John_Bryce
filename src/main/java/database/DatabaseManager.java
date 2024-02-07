@@ -1,16 +1,21 @@
 package database;
 
+import java.sql.Date;
 import java.sql.SQLException;
-import java.util.Locale;
+import java.time.LocalDate;
 
-import dao.CategoryDAO;
-import dao.CategoryDAOImpl;
-import entity.CATEGORY;
+import dao.*;
+import entity.Category;
+import entity.Company;
+import entity.Coupon;
+import entity.Customer;
 import org.apache.commons.lang3.StringUtils;
 
 public class DatabaseManager {
 
-  public static CategoryDAO categoryDAO = new CategoryDAOImpl();
+  private static final int MAX_DUMMY_COMPANIES = 10, MAX_DUMMY_COUPONS = 20, MAX_DUMMY_CUSTOMER = MAX_DUMMY_COUPONS / 2, MAX_PURCHASES = MAX_DUMMY_COUPONS / 2;
+
+  public static CategoryDAO categoryDAO = new  CategoryDAOImpl();
   public static final String SCHEMA_NAME = "project_coupons";
 
   public static final String URL = "jdbc:mysql://localhost:3306/" + SCHEMA_NAME +"?createDatabaseIfNotExist=TRUE";
@@ -86,6 +91,71 @@ public class DatabaseManager {
       "    ON DELETE NO ACTION\n" +
       "    ON UPDATE NO ACTION);";
 
+
+  private static void generateDummyCompanies() {
+    for (int i = 1; i <= MAX_DUMMY_COMPANIES; i++) {
+      Company company = new Company(0, "name " + i, "email" + i + "@gmail.com", "1234", null);
+      try {
+        CompaniesDAOImpl.getInstance().add(company);
+      } catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private static void generateDummyCoupons() {
+    for (int i = 1; i <= MAX_DUMMY_COUPONS; i++) {
+      int randomCompanyId = (int)(Math.random() * MAX_DUMMY_COMPANIES + 1);
+      Coupon coupon = new Coupon(0, randomCompanyId, Category.getRandomCategory(), "title " + i, "description " + i, Date.valueOf(LocalDate.now()),
+              Date.valueOf(LocalDate.now().plusDays(i)), i, i, "image " + i);
+      try {
+        CouponsDAOImpl.getInstance().add(coupon);
+      } catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private static void generateDummyCustomers() {
+    for (int i = 1; i <= MAX_DUMMY_CUSTOMER; i++) {
+      Customer customer = new Customer(0, "firstName " + i, "lastName " + i, "email" + i + "@gmail.com", "1234", null);
+      try {
+        CustomersDAOImpl.getInstance().add(customer);
+      } catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private static void generateDummyPurchases() {
+    for (int i = 1, j = 1; i <= MAX_PURCHASES && j <= MAX_PURCHASES; i++, j++) {
+      try {
+        CouponsDAOImpl.getInstance().addCouponPurchase(i, j);
+      } catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  public static void initializationDummyData() {
+    generateDummyCompanies();
+    generateDummyCoupons();
+    generateDummyCustomers();
+    generateDummyPurchases();
+  }
+
+  private static void initializationCategories() {
+    for (Category category : Category.values()) {
+      String name = StringUtils.capitalize(category.name().toLowerCase());
+      try {
+        categoryDAO.addCategory(name);
+      } catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+
   public static void dropAndCreateStrategy() throws SQLException {
     JDBCUtils.runQuery(DROP_SCHEMA);
     JDBCUtils.runQuery(CREATE_SCHEMA);
@@ -94,10 +164,7 @@ public class DatabaseManager {
     JDBCUtils.runQuery(CREATE_TABLE_COUPONS);
     JDBCUtils.runQuery(CREATE_TABLE_CUSTOMERS);
     JDBCUtils.runQuery(CREATE_TABLE_PURCHASES);
-
-    for (CATEGORY category : CATEGORY.values()) {
-      String name = StringUtils.capitalize(category.name().toLowerCase());
-      categoryDAO.addCategory(name);
-    }
+    initializationCategories();
+    initializationDummyData();
   }
 }

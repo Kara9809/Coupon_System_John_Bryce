@@ -5,9 +5,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import dao.CompaniesDAO;
-import dao.CompaniesDAOImpl;
-import entity.CATEGORY;
+import entity.Category;
 import entity.Coupon;
 import entity.Customer;
 import exception.CouponSystemException;
@@ -68,7 +66,7 @@ public class CustomerFacadeImpl extends ClientFacade implements CustomerFacade {
     }
 
     @Override
-    public List<Coupon> getCustomerCouponByCategory(int customerId, CATEGORY category) throws SQLException, CouponSystemException {
+    public List<Coupon> getCustomerCouponByCategory(int customerId, Category category) throws SQLException, CouponSystemException {
         if (!customersDAO.isExist(customerId)) {
             throw new CouponSystemException(ErrorMessage.NOT_EXIST_CUSTOMER);
         }

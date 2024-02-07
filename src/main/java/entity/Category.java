@@ -1,11 +1,9 @@
 package entity;
 
-import exception.CouponSystemException;
-import exception.ErrorMessage;
 import lombok.Getter;
 
 @Getter
-public enum CATEGORY {
+public enum Category {
   FOOD(1),
   ELECTRICITY(2),
   RESTAURANT(3),
@@ -16,10 +14,17 @@ public enum CATEGORY {
 
   private final int categoryId;
 
-  CATEGORY(int categoryId) {
+  Category(int categoryId) {
     this.categoryId = categoryId;
   }
 
+  public static int getRandomCategoryId() {
+    return (int)(Math.random() * values().length + 1);
+  }
+
+  public static Category getRandomCategory() {
+    return values()[(int)(Math.random() * values().length)];
+  }
 
 
 //  public static CATEGORY getCategoryById(int id) throws CouponSystemException {

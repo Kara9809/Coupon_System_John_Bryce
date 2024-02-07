@@ -13,7 +13,6 @@ public class RemoveExpiredCouponThread extends Thread {
 
   public RemoveExpiredCouponThread() {
     this.setDaemon(true);
-    this.start();
   }
 
   @Override

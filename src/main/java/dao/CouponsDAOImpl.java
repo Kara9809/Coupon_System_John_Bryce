@@ -1,6 +1,5 @@
 package dao;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,8 +8,7 @@ import java.util.Map;
 
 import database.ConvertUtils;
 import database.JDBCUtils;
-import entity.CATEGORY;
-import entity.Company;
+import entity.Category;
 import entity.Coupon;
 import lombok.Getter;
 
@@ -28,7 +26,7 @@ public class CouponsDAOImpl implements CouponsDAO {
 
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, coupon.getCompanyId());
-        params.put(2, coupon.getCategoryId());
+        params.put(2, coupon.getCategory().getCategoryId());
         params.put(3, coupon.getTitle());
         params.put(4, coupon.getDescription());
         params.put(5, coupon.getStartDate());
@@ -46,7 +44,7 @@ public class CouponsDAOImpl implements CouponsDAO {
 
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, coupon.getCompanyId());
-        params.put(2, coupon.getCategoryId());
+        params.put(2, coupon.getCategory().getCategoryId());
         params.put(3, coupon.getTitle());
         params.put(4, coupon.getDescription());
         params.put(5, coupon.getStartDate());
@@ -230,7 +228,7 @@ public class CouponsDAOImpl implements CouponsDAO {
 
 
     @Override
-    public List<Coupon> getCouponByCategory(int companyId, CATEGORY category) throws SQLException {
+    public List<Coupon> getCouponByCategory(int companyId, Category category) throws SQLException {
         String query = "SELECT * FROM project_coupons.coupons WHERE company_id = ? AND category_id = ? ;";
 
         List<Coupon> coupons = new ArrayList<>();
@@ -270,7 +268,7 @@ public class CouponsDAOImpl implements CouponsDAO {
     }
 
     @Override
-    public List<Coupon> getAllCouponByCustomerIdAndCategory(int customerId, CATEGORY category) throws SQLException {
+    public List<Coupon> getAllCouponByCustomerIdAndCategory(int customerId, Category category) throws SQLException {
         String query = "SELECT * FROM project_coupons.coupons " +
                 "INNER JOIN project_coupons.purchases " +
                 "ON project_coupons.purchases.coupon_id=project_coupons.coupons.id WHERE customer_id = ? AND category_id = ?;";

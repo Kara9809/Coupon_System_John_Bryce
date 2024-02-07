@@ -22,8 +22,8 @@ public class Main {
 
         try {
             DatabaseManager.dropAndCreateStrategy();
-            new RemoveExpiredCouponThread();
-
+            RemoveExpiredCouponThread removeExpiredCouponThread = new RemoveExpiredCouponThread();
+            removeExpiredCouponThread.start();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

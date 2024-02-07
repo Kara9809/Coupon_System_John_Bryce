@@ -1,10 +1,9 @@
 package dao;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
-import entity.CATEGORY;
+import entity.Category;
 import entity.Coupon;
 
 public interface CouponsDAO extends DaoMain<Coupon, Integer> {
@@ -24,11 +23,11 @@ public interface CouponsDAO extends DaoMain<Coupon, Integer> {
 
   List<Coupon> getAllByMaxPrice(int companyId, double price) throws SQLException;
 
-  List<Coupon> getCouponByCategory(int companyId, CATEGORY category) throws SQLException;
+  List<Coupon> getCouponByCategory(int companyId, Category category) throws SQLException;
 
   List<Coupon> getAllCouponByCustomerId(int customerId) throws SQLException;
 
-  List<Coupon> getAllCouponByCustomerIdAndCategory(int customerId, CATEGORY category) throws SQLException;
+  List<Coupon> getAllCouponByCustomerIdAndCategory(int customerId, Category category) throws SQLException;
 
   List<Coupon> getAllCouponByCustomerIdAndMaxPrice(int customerId, double price) throws SQLException;
 
