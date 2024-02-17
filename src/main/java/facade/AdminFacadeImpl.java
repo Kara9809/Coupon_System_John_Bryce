@@ -48,6 +48,9 @@ public class AdminFacadeImpl extends ClientFacade implements AdminFacade {
         if (!companiesDAO.isExistByName(company.getName())) {
             throw new CouponSystemException(ErrorMessage.COMPANY_UPDATE_NAME);
         }
+        if (companiesDAO.isOtherExistByEmail(companyId, company.getEmail())) {
+            throw new CouponSystemException(ErrorMessage.COMPANY_EMAIL_EXIST);
+        }
         companiesDAO.update(companyId, company);
     }
 
@@ -110,7 +113,7 @@ public class AdminFacadeImpl extends ClientFacade implements AdminFacade {
     }
 
     @Override
-    public Customer getOneCustomers(int customerId) throws SQLException, CouponSystemException {
+    public Customer getOneCustomer(int customerId) throws SQLException, CouponSystemException {
         if (!customersDAO.isExist(customerId)) {
             throw new CouponSystemException(ErrorMessage.NOT_EXIST_CUSTOMER);
         }

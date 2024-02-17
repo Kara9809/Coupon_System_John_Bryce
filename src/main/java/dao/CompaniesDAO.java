@@ -6,6 +6,8 @@ import entity.Company;
 
 
 public interface CompaniesDAO extends DaoMain<Company,Integer> {
+    Company getCompanyByEmail(String email) throws SQLException;
+
     boolean isExistByEmailOrName(String email, String name) throws SQLException;
 
     boolean isExistByName(String name) throws SQLException;

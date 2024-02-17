@@ -6,12 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import database.ConnectionPool;
 import database.ConvertUtils;
 import database.JDBCUtils;
 import entity.Company;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 public class CompaniesDAOImpl implements CompaniesDAO {
     @Getter
@@ -72,6 +70,21 @@ public class CompaniesDAOImpl implements CompaniesDAO {
         Company company = null;
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, id);
+
+        List<?> list = JDBCUtils.runQueryWithResult(query, params);
+
+        for (Object obj : list) {
+            company = ConvertUtils.objectToCompany((Map<String, Object>) obj);
+        }
+        return company;
+    }
+
+    @Override
+    public Company getCompanyByEmail(String email) throws SQLException {
+        String query = "SELECT * FROM project_coupons.companies WHERE email = ?;";
+        Company company = null;
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, email);
 
         List<?> list = JDBCUtils.runQueryWithResult(query, params);
 

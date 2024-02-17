@@ -95,6 +95,21 @@ public class CouponsDAOImpl implements CouponsDAO {
     }
 
     @Override
+    public Coupon getSingleByTitle(String title) throws SQLException {
+        String query = "SELECT * FROM project_coupons.coupons WHERE title = ?;";
+        Coupon coupon = null;
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, title);
+
+        List<?> list = JDBCUtils.runQueryWithResult(query, params);
+
+        for (Object obj : list) {
+            coupon = ConvertUtils.objectToCoupon((Map<String, Object>) obj);
+        }
+        return coupon;
+    }
+
+    @Override
     public boolean isExist(Integer id) throws SQLException {
         String query = "SELECT EXISTS (SELECT * FROM project_coupons.coupons WHERE id = ?) AS result;";
         Map<Integer, Object> params = new HashMap<>();

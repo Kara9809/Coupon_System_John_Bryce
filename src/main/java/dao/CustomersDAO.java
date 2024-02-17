@@ -11,5 +11,7 @@ public interface CustomersDAO extends DaoMain<Customer,Integer> {
 
     boolean isOtherExistByEmail(int idCustomer, String email) throws SQLException;
 
+    Customer getCustomerByEmail(String email) throws SQLException;
+
     int getCustomerIdByEmail(String email) throws SQLException;
 }

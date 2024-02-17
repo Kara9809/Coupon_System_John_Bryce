@@ -8,7 +8,6 @@ import java.util.Map;
 
 import database.ConvertUtils;
 import database.JDBCUtils;
-import entity.Company;
 import entity.Customer;
 import lombok.Getter;
 
@@ -150,6 +149,21 @@ public class CustomersDAOImpl implements CustomersDAO {
         }
 
         return result;
+    }
+
+    @Override
+    public Customer getCustomerByEmail(String email) throws SQLException {
+        String query = "SELECT * FROM project_coupons.customers WHERE email = ?;";
+        Customer customer = null;
+        Map<Integer, Object> params = new HashMap<>();
+        params.put(1, email);
+
+        List<?> list = JDBCUtils.runQueryWithResult(query, params);
+
+        for (Object obj : list) {
+            customer = ConvertUtils.objectToCustomer((Map<String, Object>) obj);
+        }
+        return customer;
     }
 
     @Override

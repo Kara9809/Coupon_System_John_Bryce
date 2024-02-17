@@ -30,7 +30,7 @@ public interface AdminFacade {
 
     List<Customer> getAllCustomers() throws SQLException;
 
-    Customer getOneCustomers(int customerId) throws SQLException, CouponSystemException;
+    Customer getOneCustomer(int customerId) throws SQLException, CouponSystemException;
 
 
 

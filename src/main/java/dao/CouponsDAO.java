@@ -7,7 +7,9 @@ import entity.Category;
 import entity.Coupon;
 
 public interface CouponsDAO extends DaoMain<Coupon, Integer> {
-  void addCouponPurchase(int customerId, int couponId) throws SQLException;
+    Coupon getSingleByTitle(String title) throws SQLException;
+
+    void addCouponPurchase(int customerId, int couponId) throws SQLException;
 
   void deleteAllCouponPurchaseByCustomerId(int customerId) throws SQLException;
 
