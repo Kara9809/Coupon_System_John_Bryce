@@ -40,7 +40,7 @@ public class CouponsDAOImpl implements CouponsDAO {
 
     @Override
     public void update(Integer id, Coupon coupon) throws SQLException {
-        String query = "UPDATE project_coupons.coupons SET company_id = ?, category_id = ?, title = ?, description = ?, start_date = ?, end_date = ?, amount = ?, price = ?, image = ?, WHERE id = ?;";
+        String query = "UPDATE project_coupons.coupons SET company_id = ?, category_id = ?, title = ?, description = ?, start_date = ?, end_date = ?, amount = ?, price = ?, image = ? WHERE id = ?;";
 
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, coupon.getCompanyId());
@@ -52,6 +52,8 @@ public class CouponsDAOImpl implements CouponsDAO {
         params.put(7, coupon.getAmount());
         params.put(8, coupon.getPrice());
         params.put(9, coupon.getImage());
+        params.put(10, id);
+
 
         JDBCUtils.runQuery(query, params);
     }
@@ -95,11 +97,12 @@ public class CouponsDAOImpl implements CouponsDAO {
     }
 
     @Override
-    public Coupon getSingleByTitle(String title) throws SQLException {
-        String query = "SELECT * FROM project_coupons.coupons WHERE title = ?;";
+    public Coupon getSingleByTitle(int companyId, String title) throws SQLException {
+        String query = "SELECT * FROM project_coupons.coupons WHERE title = ? AND company_id = ?;";
         Coupon coupon = null;
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, title);
+        params.put(2, companyId);
 
         List<?> list = JDBCUtils.runQueryWithResult(query, params);
 
@@ -308,7 +311,7 @@ public class CouponsDAOImpl implements CouponsDAO {
         String query = "SELECT * FROM project_coupons.coupons " +
                 "INNER JOIN project_coupons.purchases " +
                 "ON project_coupons.purchases.coupon_id=project_coupons.coupons.id WHERE customer_id = ?" +
-                " AND WHERE price <= ?;";
+                " AND price <= ?;";
 
         List<Coupon> coupons = new ArrayList<>();
 

@@ -22,7 +22,7 @@ class AdminFacadeImplTest {
 
 
     @Test
-    void login() {
+    void loginTest() {
         //try to log in
         try {
             assertTrue(AdminFacadeImpl.getInstance().login("admin@admin.com", "admin"));
@@ -75,7 +75,7 @@ class AdminFacadeImplTest {
     void updateCompanyTest() {
         // Create an instance of the Company class
         try {
-            Company companyTestSuccess = companiesDAO.getCompanyByEmail("emailTest@gmail.com");
+            Company companyTestSuccess = companiesDAO.getCompanyByEmail("email10@gmail.com");
             companyTestSuccess.setPassword("123456789");
             adminFacade.updateCompany(companyTestSuccess.getId(), companyTestSuccess);
 
@@ -84,7 +84,7 @@ class AdminFacadeImplTest {
             throw new RuntimeException(e);
         }
         try {
-            Company companyTestFailIdUpdate = companiesDAO.getCompanyByEmail("emailTest@gmail.com");
+            Company companyTestFailIdUpdate = companiesDAO.getCompanyByEmail("email10@gmail.com");
             companyTestFailIdUpdate.setId(20);
             CouponSystemException thrown1 = assertThrows(CouponSystemException.class, () -> {
                 adminFacade.updateCompany(companyTestFailIdUpdate.getId(), companyTestFailIdUpdate);
@@ -95,7 +95,7 @@ class AdminFacadeImplTest {
         }
 
         try {
-            Company companyTestFailNameUpdate = companiesDAO.getCompanyByEmail("emailTest@gmail.com");
+            Company companyTestFailNameUpdate = companiesDAO.getCompanyByEmail("email10@gmail.com");
             companyTestFailNameUpdate.setName("test123");
             CouponSystemException thrown1 = assertThrows(CouponSystemException.class, () -> {
                 adminFacade.updateCompany(companyTestFailNameUpdate.getId(), companyTestFailNameUpdate);
@@ -108,7 +108,7 @@ class AdminFacadeImplTest {
 
 
         try {
-            Company companyTestFailIdUpdate = companiesDAO.getCompanyByEmail("emailTest@gmail.com");
+            Company companyTestFailIdUpdate = companiesDAO.getCompanyByEmail("email10@gmail.com");
             companyTestFailIdUpdate.setEmail("email4@gmail.com");
             CouponSystemException thrown1 = assertThrows(CouponSystemException.class, () -> {
                 adminFacade.updateCompany(companyTestFailIdUpdate.getId(), companyTestFailIdUpdate);
@@ -123,9 +123,19 @@ class AdminFacadeImplTest {
 
     @Test
     void deleteCompanyTest() {
+        // Create a new company
+        Company companyToAdd = new Company(0, "nameTest2", "emailTest2@gmail.com", "1234", null);
+
+        // Add the new company
         try {
-            adminFacade.deleteCompany(1);
-            Company companyTestSuccess = companiesDAO.getSingle(1);
+            adminFacade.addCompany(companyToAdd);
+        } catch (SQLException | CouponSystemException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            int companyId = companiesDAO.getCompanyIdByEmail("emailTest2@gmail.com");
+            adminFacade.deleteCompany(companyId);
+            Company companyTestSuccess = companiesDAO.getSingle(companyId);
             assertNull(companyTestSuccess);
         } catch (SQLException | CouponSystemException e) {
             throw new RuntimeException(e);
@@ -142,7 +152,6 @@ class AdminFacadeImplTest {
     void getAllCompaniesTest() {
         try {
             assertTrue(adminFacade.getAllCompanies().size() > 1);
-            System.out.println(adminFacade.getAllCompanies().size());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -223,9 +232,20 @@ class AdminFacadeImplTest {
 
     @Test
     void deleteCustomerTest() {
+        // Create a new customer
+        Customer customerToAdd = new Customer(0, "customerNameTest2", "testLastName2", "customerEmailTest2@gmail.com", "1234", null);
+
+        // Add the new customer
         try {
-            adminFacade.deleteCustomer(1);
-            Customer customerTestSuccess = customersDAO.getSingle(1);
+            adminFacade.addCustomer(customerToAdd);
+        } catch (SQLException | CouponSystemException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            int customerId = customersDAO.getCustomerIdByEmail("customerEmailTest2@gmail.com");
+            adminFacade.deleteCustomer(customerId);
+            Customer customerTestSuccess = customersDAO.getSingle(customerId);
             assertNull(customerTestSuccess);
         } catch (SQLException | CouponSystemException e) {
             throw new RuntimeException(e);
@@ -242,7 +262,6 @@ class AdminFacadeImplTest {
     void getAllCustomersTest() {
         try {
             assertTrue(adminFacade.getAllCustomers().size() > 1);
-            System.out.println(adminFacade.getAllCustomers().size());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

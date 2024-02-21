@@ -2,7 +2,6 @@ package facade;
 
 import dao.*;
 import entity.Category;
-import entity.Company;
 import entity.Coupon;
 import exception.CouponSystemException;
 import exception.ErrorMessage;
@@ -24,7 +23,7 @@ public class CompanyFacadeImplTest {
     private static final AdminFacade adminFacade = AdminFacadeImpl.getInstance();
 
     @Test
-    void login() {
+    void loginTest() {
         try {
             assertTrue(CompanyFacadeImpl.getInstance().login("email6@gmail.com", "1234"));
         } catch (CouponSystemException | SQLException e) {
@@ -77,7 +76,7 @@ public class CompanyFacadeImplTest {
     @Test
     void updateCouponTest() throws SQLException {
         // Create a new coupon
-        Coupon couponTestSuccess = new Coupon(0, 5, Category.getRandomCategory(), "titleTest1", "descriptionTest1", Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now().plusDays(2)), 1, 9.90, "imageTest1");
+        Coupon couponTestSuccess = new Coupon(0, 6, Category.getRandomCategory(), "titleTest1", "descriptionTest1", Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now().plusDays(2)), 1, 9.90, "imageTest1");
 
         // Add the new coupon
         try {
@@ -89,28 +88,31 @@ public class CompanyFacadeImplTest {
         try {
             assertTrue(couponsDAO.isExistByTitleAndCompanyId(couponTestSuccess.getTitle(), couponTestSuccess.getCompanyId()));
 
-            couponTestSuccess.setImage("image 134");
+           Coupon couponToCheck =  couponsDAO.getSingleByTitle(6, "titleTest1");
+            couponToCheck.setImage("image 134");
             couponsDAO.update(couponTestSuccess.getId(), couponTestSuccess);
 
-            assertEquals(couponTestSuccess.getImage(), couponsDAO.getSingle(couponTestSuccess.getId()).getImage());
+            assertEquals(couponTestSuccess.getImage(), couponsDAO.getSingle(couponToCheck.getId()).getImage());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         try {
-            couponTestSuccess.setTitle("tittleTest2");
-            couponsDAO.update(couponTestSuccess.getId(), couponTestSuccess);
+            Coupon couponToCheck =  couponsDAO.getSingleByTitle(6, "titleTest1");
 
-            assertEquals(couponTestSuccess.getTitle(), couponsDAO.getSingle(couponTestSuccess.getId()).getTitle());
+            couponToCheck.setTitle("tittleTest2");
+            couponsDAO.update(couponTestSuccess.getId(), couponToCheck);
+
+            assertEquals(couponTestSuccess.getTitle(), couponsDAO.getSingle(couponToCheck.getId()).getTitle());
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         try {
-            Coupon couponTestFailIdUpdate = couponsDAO.getSingle(couponTestSuccess.getId());
+            Coupon couponTestFailIdUpdate = couponsDAO.getSingleByTitle(6, "titleTest1");
             couponTestFailIdUpdate.setId(999);
             CouponSystemException thrown1 = assertThrows(CouponSystemException.class, () -> {
-                couponsDAO.update(couponTestFailIdUpdate.getId(), couponTestFailIdUpdate);
+                CompanyFacadeImpl.getInstance().updateCoupon(6, couponTestFailIdUpdate.getId(), couponTestFailIdUpdate);
             });
             assertEquals(ErrorMessage.COUPON_UPDATE_ID.getMessage(), thrown1.getMessage());
         } catch (SQLException e) {
@@ -118,10 +120,12 @@ public class CompanyFacadeImplTest {
         }
 
         try {
-            Coupon couponTestFailTitleIsExistByCompanyID = couponsDAO.getSingle(couponTestSuccess.getId());
+
+            Coupon couponTestFailTitleIsExistByCompanyID = couponsDAO.getSingleByTitle(6, "titleTest1");
             couponTestFailTitleIsExistByCompanyID.setCompanyId(888);
             CouponSystemException thrown1 = assertThrows(CouponSystemException.class, () -> {
-                couponsDAO.update(couponTestFailTitleIsExistByCompanyID.getId(), couponTestFailTitleIsExistByCompanyID);
+                CompanyFacadeImpl.getInstance().updateCoupon(888, couponTestFailTitleIsExistByCompanyID.getId(), couponTestFailTitleIsExistByCompanyID);
+
             });
             assertEquals(ErrorMessage.COUPON_UPDATE_COMP_ID.getMessage(), thrown1.getMessage());
 
@@ -133,18 +137,19 @@ public class CompanyFacadeImplTest {
     @Test
     void deleteCouponTest() {
         try {
-            CompanyFacadeImpl.getInstance().deleteCoupon(3, 3);
-            Coupon couponTestSuccess = CouponsDAOImpl.getInstance().getSingle(1);
+            List<Coupon> couponsFromDb = couponsDAO.getAllByCompanyId(5);
+            CompanyFacadeImpl.getInstance().deleteCoupon(5, couponsFromDb.get(0).getId());
+            Coupon couponTestSuccess = CouponsDAOImpl.getInstance().getSingle(couponsFromDb.get(0).getId());
             assertNull(couponTestSuccess);
         } catch (SQLException | CouponSystemException e) {
             throw new RuntimeException(e);
         }
 
         CouponSystemException thrown1 = assertThrows(CouponSystemException.class, () -> {
-            CompanyFacadeImpl.getInstance().deleteCoupon(3, 999);
+            CompanyFacadeImpl.getInstance().deleteCoupon(5, 999);
         });
 
-        assertEquals(ErrorMessage.NOT_EXIST_COUPON.getMessage(), thrown1.getMessage());
+        assertEquals(ErrorMessage.COUPON_OR_COMPANY_NOT_EXIST.getMessage(), thrown1.getMessage());
 
     }
 
@@ -152,7 +157,6 @@ public class CompanyFacadeImplTest {
     void getCompanyCouponsTest() {
         try {
             assertNull(adminFacade.getOneCompany(5).getCoupons());
-            System.out.println(CompanyFacadeImpl.getInstance().getCompanyCoupons(5));
         } catch (SQLException | CouponSystemException e) {
             throw new RuntimeException(e);
         }
@@ -168,7 +172,6 @@ public class CompanyFacadeImplTest {
     void getCompanyCouponsByCategoryTest() {
         try {
             assertNull(adminFacade.getOneCompany(5).getCoupons());
-            System.out.println(CompanyFacadeImpl.getInstance().getCompanyCouponsByCategory(5, Category.getRandomCategory()));
         } catch (SQLException | CouponSystemException e) {
             throw new RuntimeException(e);
         }
@@ -185,7 +188,6 @@ public class CompanyFacadeImplTest {
     void getCompanyCouponsByMaxPriceTest() {
         try {
             assertNull(adminFacade.getOneCompany(5).getCoupons());
-            System.out.println(CompanyFacadeImpl.getInstance().getCompanyCouponsByMaxPrice(5, 50.00));
         } catch (SQLException | CouponSystemException e) {
             throw new RuntimeException(e);
         }
@@ -201,7 +203,6 @@ public class CompanyFacadeImplTest {
     void getCompanyDetailsTest() {
         try {
             assertNull(adminFacade.getOneCompany(5).getCoupons());
-            System.out.println(CompanyFacadeImpl.getInstance().getCompanyDetails(5));
         } catch (SQLException | CouponSystemException e) {
             throw new RuntimeException(e);
         }

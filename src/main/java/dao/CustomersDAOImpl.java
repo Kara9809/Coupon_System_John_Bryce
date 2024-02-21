@@ -33,7 +33,7 @@ public class CustomersDAOImpl implements CustomersDAO {
 
     @Override
     public void update(Integer id, Customer customer) throws SQLException {
-        String query = "UPDATE project_coupons.customers SET first_name = ?, last_name - ?, email= ?, password= ? WHERE id = ?;";
+        String query = "UPDATE project_coupons.customers SET first_name = ?, last_name = ?, email= ?, password= ? WHERE id = ?;";
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customer.getFirstName());
         params.put(2, customer.getLastName());
