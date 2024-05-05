@@ -6,7 +6,9 @@ import entity.Coupon;
 import entity.Customer;
 import exception.CouponSystemException;
 import exception.ErrorMessage;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -15,14 +17,22 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import security.ClientType;
+import security.LoginManager;
 
+@TestMethodOrder(OrderAnnotation.class)
 public class CustomerFacadeImplTest {
     private static final CouponsDAO couponsDAO = CouponsDAOImpl.getInstance();
-
+    private static CustomerFacade customerFacade = null;
+    private static final LoginManager loginManager = LoginManager.getInstance();
     @Test
+    @Order(1)
     void loginTest() {
         try {
+            customerFacade = (CustomerFacade) loginManager.loginManagement("email6@gmail.com", "1234", ClientType.CUSTOMER);
             assertTrue(CustomerFacadeImpl.getInstance().login("email6@gmail.com", "1234"));
+            assertNotNull(customerFacade);
         } catch (CouponSystemException | SQLException e) {
             System.out.println(e.getMessage());
         }

@@ -1,23 +1,20 @@
 package database;
 
+import lombok.Getter;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Stack;
 public class ConnectionPool {
     private static final int NUM_OF_CONS = 10;
-    //    STEP 1 FOR SINGELTON CLASS
+
+    @Getter
     private static final ConnectionPool instance = new ConnectionPool();
 
     private Stack<Connection> connections = new Stack<>();
 
 
-//    STEP 2 FOR SINGELTON CLASS
-    public static ConnectionPool getInstance() {
-        return instance;
-    }
-
-    //    STEP 3 FOR SINGELTON CLASS
     private ConnectionPool() {
         for (int i = 0; i < NUM_OF_CONS; i++) {
             try {

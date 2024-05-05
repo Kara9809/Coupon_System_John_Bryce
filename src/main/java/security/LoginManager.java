@@ -10,13 +10,6 @@ import java.sql.SQLException;
 
 public class LoginManager {
 
-    private AdminFacade adminFacade;
-
-    private CompanyFacade companyFacade;
-
-    private CustomerFacade customerFacade;
-
-
     @Getter
     private static final LoginManager instance = new LoginManager();
 
@@ -24,19 +17,21 @@ public class LoginManager {
     }
 
     public ClientFacade loginManagement(String email, String password, ClientType clientType) throws CouponSystemException, SQLException {
-        ClientFacade clientFacade = null;
         switch (clientType) {
             case ADMINISTRATOR:
+                AdminFacade adminFacade = AdminFacadeImpl.getInstance();
                 if (adminFacade.login(email, password)) {
                     return (ClientFacade) adminFacade;
                 }
                 break;
             case COMPANY:
+                CompanyFacade companyFacade = CompanyFacadeImpl.getInstance();
                 if (companyFacade.login(email, password)) {
                     return (ClientFacade) companyFacade;
                 }
                 break;
             case CUSTOMER:
+                CustomerFacade customerFacade = CustomerFacadeImpl.getInstance();
                 if (customerFacade.login(email, password)) {
                     return (ClientFacade) customerFacade;
                 }

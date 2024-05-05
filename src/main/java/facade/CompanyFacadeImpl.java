@@ -46,6 +46,13 @@ public class CompanyFacadeImpl extends ClientFacade implements CompanyFacade {
         if (!couponsDAO.isExistByCouponIdAndCompanyId(couponId, companyId)) {
             throw new CouponSystemException(ErrorMessage.COUPON_UPDATE_COMP_ID);
         }
+
+        if (!(couponsDAO.getSingle(couponId).getTitle().equals(coupon.getTitle()))){
+            if(couponsDAO.isExistByTitleAndCompanyId(coupon.getTitle(), companyId)) {
+                throw new CouponSystemException(ErrorMessage.COUPON_TITLE_EXIST);
+            }
+        }
+
         coupon.setCompanyId(companyId);
         couponsDAO.update(couponId, coupon);
     }

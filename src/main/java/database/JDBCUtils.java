@@ -11,7 +11,7 @@ import java.util.Map;
 public final class JDBCUtils {
 
     public static void runQuery(String sql) throws SQLException {
-        //Step 2 - getConnection from CP
+        //Step 2 - getConnection from Connection Pull
         Connection connection = ConnectionPool.getInstance().getConnection();
         //Step 3 - Prepare Statement & Execute
         PreparedStatement statement = connection.prepareStatement(sql);

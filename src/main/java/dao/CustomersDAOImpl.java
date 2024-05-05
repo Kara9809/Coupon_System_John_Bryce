@@ -12,7 +12,7 @@ import entity.Customer;
 import lombok.Getter;
 
 public class CustomersDAOImpl implements CustomersDAO {
-    @Getter
+    @Getter // eager initialization
     private static final CustomersDAO instance = new CustomersDAOImpl();
 
     private CustomersDAOImpl() {

@@ -9,5 +9,4 @@ import entity.Category;
 public interface CategoryDAO {
     void addCategory(String name) throws SQLException;
     List<Category> getAllCategory() throws SQLException;
-
 }
